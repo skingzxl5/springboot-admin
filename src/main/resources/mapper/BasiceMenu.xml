@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.admin.mapper.BasiceMenuMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.admin.model.BasiceMenu">
+        <id column="id" property="id"/>
+        <result column="parent_id" property="parentId"/>
+        <result column="type" property="type"/>
+        <result column="title" property="title"/>
+        <result column="name" property="name"/>
+        <result column="icon" property="icon"/>
+        <result column="outer_flag" property="outerFlag"/>
+        <result column="url" property="url"/>
+        <result column="path" property="path"/>
+        <result column="keep_alive" property="keepAlive"/>
+        <result column="view_path" property="viewPath"/>
+        <result column="show_flag" property="showFlag"/>
+        <result column="permission" property="permission"/>
+        <result column="sort" property="sort"/>
+        <result column="create_st_id" property="createStId"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_st_id" property="updateStId"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id
+        , parent_id, type, title, name, icon, outer_flag, url, path, keep_alive, view_path, show_flag, permission, sort, create_st_id, create_time, update_st_id, update_time
+    </sql>
+    <update id="deleteBySys">
+        delete from basice_menu_role
+        <where>
+            <if test="roleId != null and roleId != '' ">
+                and role_id = #{roleId}
+            </if>
+            <if test="menuId != null">
+                and menu_id = #{menuId}
+            </if>
+        </where>
+    </update>
+    <select id="findMenusByRoleIds" resultType="com.admin.bean.BasiceMenuVo">
+        select distinct t.* from basice_menu t
+        inner join basice_menu_role r on r.menu_id = t.id
+        where
+        r.role_id in
+        <foreach collection="roleIds" index="index" item="roleId"
+                 open="(" separator="," close=")">
+            #{roleId}
+        </foreach>
+        <if test="type != null">
+            and t.type = #{type}
+        </if>
+        ORDER BY sort ASC
+    </select>
+    <select id="findMenusByUserId" resultType="com.admin.bean.BasiceMenuVo">
+        select distinct t.id,
+                        t.parent_id,
+                        t.type,
+                        t.title,
+                        t.name,
+                        t.icon,
+                        t.outer_flag,
+                        t.url,
+                        t.path,
+                        t.keep_alive,
+                        t.view_path,
+                        t.show_flag,
+                        t.permission,
+                        t.sort,
+                        t.create_st_id,
+                        t.create_time,
+                        t.update_st_id,
+                        t.update_time
+        from basice_menu t
+                 inner join basice_menu_role r on r.menu_id = t.id
+                 inner join basice_role rl on rl.id = r.role_id
+                 inner join basice_role_user u on u.role_id = rl.id
+        where u.st_id = #{stId}
+          and t.type in (0, 1)
+        ORDER BY t.parent_id, t.sort ASC
+    </select>
+    <select id="findPermissionByUserId" resultType="com.admin.bean.BasicePermissionVo">
+        select distinct t.id,
+                        t.parent_id,
+                        t.type,
+                        t.title,
+                        t.name,
+                        t.permission,
+                        t.sort,
+                        t.create_st_id,
+                        t.create_time,
+                        t.update_st_id,
+                        t.update_time
+        from basice_menu t
+                 inner join basice_menu_role r on r.menu_id = t.id
+                 inner join basice_role rl on rl.id = r.role_id
+                 inner join basice_role_user u on u.role_id = rl.id
+        where u.st_id = #{stId}
+          and t.type = 2
+    </select>
+    <select id="findPermissionValueByUserId" resultType="java.lang.String">
+        select distinct t.permission
+        from basice_menu t
+                 inner join basice_menu_role r on r.menu_id = t.id
+                 inner join basice_role rl on rl.id = r.role_id
+                 inner join basice_role_user u on u.role_id = rl.id
+        where u.st_id = #{stId}
+          and t.type = 2
+    </select>
+
+</mapper>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.admin.mapper.BasiceUserMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.admin.model.BasiceUser">
+        <id column="st_id" property="stId"/>
+        <result column="st_name" property="stName"/>
+        <result column="st_ename" property="stEname"/>
+        <result column="st_phone" property="stPhone"/>
+        <result column="login_name" property="loginName"/>
+        <result column="login_password" property="loginPassword"/>
+        <result column="create_st_id" property="createStId"/>
+        <result column="machine_code" property="machineCode"/>
+        <result column="create_time" property="createTime"/>
+        <result column="delete_flag" property="deleteFlag"/>
+    </resultMap>
+    <resultMap id="LoginInfoMap" type="com.admin.bean.login.LoginInfo">
+        <id column="st_id" property="stId"/>
+        <result column="st_name" property="stName"/>
+        <result column="st_ename" property="stEname"/>
+        <result column="st_phone" property="stPhone"/>
+        <result column="login_name" property="loginName"/>
+        <result column="login_password" property="loginPassword"/>
+        <result column="avatar" property="avatar"/>
+        <result column="create_st_id" property="createStId"/>
+        <result column="machine_code" property="machineCode"/>
+        <result column="create_time" property="createTime"/>
+        <result column="delete_flag" property="deleteFlag"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        st_id
+        , st_name, st_ename, st_phone, login_name, login_password, st_id_ctreate, machine_code, ctreate_date, delete_flag
+    </sql>
+    <select id="loginInfoByLoginName" resultMap="LoginInfoMap">
+        select t.st_id,
+               t.st_ename,
+               t.st_name,
+               t.st_phone,
+               t.login_name,
+               t.login_password,
+               t.avatar,
+               t.create_st_id,
+               t.machine_code,
+               t.create_time
+        from basice_user t
+        where t.delete_flag = 0
+          and t.login_name = #{loginName} limit 1
+    </select>
+
+</mapper>
