@@ -355,6 +355,10 @@ SSH  -->  git@github.com:skingzxl5/vue3-elementplus-admin.git
 
 http://localhost:9223/doc.html
 
+## 默认账号
+admin
+123456
+
 ## 沟通交流
 
 微信号:sking5
